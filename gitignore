@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Dataset (large, download from Mendeley instead)
+dataset/
+*.csv
+
+# Trained models (regenerate by running the script)
+*.pkl
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
