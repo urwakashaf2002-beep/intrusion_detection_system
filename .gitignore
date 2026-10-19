@@ -1,0 +1,23 @@
+# Python and local environments
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.*
+!.env.example
+
+# Angular dependencies and build outputs
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Large raw dataset (kept local only; a tiny sample_inputs.csv IS tracked)
+data/LSNM2024_150K_ML_ready.csv
+
+# Local logs
+*.log

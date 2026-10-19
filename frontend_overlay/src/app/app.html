@@ -1,0 +1,54 @@
+<main class="shell">
+  <header>
+    <h1>LSNM Network Attack Detector</h1>
+    <p>Teaching prototype • Random Forest • 44 packet features → Benign / Attack</p>
+  </header>
+
+  @if (deployedStatic) {
+    <aside class="notice">
+      Static GitHub Pages demonstration only. Predictions require Flask and Angular
+      running locally.
+    </aside>
+  }
+
+  <div class="actions">
+    <button type="button" class="secondary" (click)="fillSample('benign')">Fill Benign sample</button>
+    <button type="button" class="secondary" (click)="fillSample('attack')">Fill Attack sample</button>
+    <button type="button" class="secondary" (click)="clear()">Clear</button>
+  </div>
+
+  <form (ngSubmit)="submit()">
+    <h2>Model input features ({{ fields.length }})</h2>
+    <div class="grid">
+      @for (field of fields; track field.name) {
+        <label>{{ field.label }}
+          <input type="number" step="any" [name]="field.name"
+            [attr.min]="field.min ?? null" [attr.max]="field.max ?? null"
+            [(ngModel)]="values[field.name]" [required]="field.required" />
+        </label>
+      }
+    </div>
+    <button type="submit" [disabled]="loading() || deployedStatic">
+      {{ loading() ? 'Predicting…' : 'Run local prediction' }}
+    </button>
+  </form>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (result(); as r) {
+    <section class="result">
+      <h2>Prediction result</h2>
+      <p>
+        <span class="badge" [class.attack]="r.prediction === 1">
+          {{ r.prediction_label ?? r.prediction }}
+        </span>
+      </p>
+      @if (r.probabilities; as p) {
+        <p>Benign: <strong>{{ pct(p[0]) }}</strong> • Attack: <strong>{{ pct(p[1]) }}</strong></p>
+      }
+      <p class="small">{{ r.disclaimer }}</p>
+    </section>
+  }
+</main>
