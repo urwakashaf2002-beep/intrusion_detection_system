@@ -36,3 +36,6 @@ Open http://localhost:4200
 
 ## Disclaimer
 Research/teaching prototype only. Not a production intrusion-detection system.
+
+- GitHub repo: https://github.com/urwakashaf2002-beep/intrusion_detection_system
+- GitHub Pages: https://urwakashaf2002-beep.github.io/intrusion_detection_system/
