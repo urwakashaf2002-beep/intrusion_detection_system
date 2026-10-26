@@ -1,0 +1,15 @@
+STUDENT INFORMATION
+===================
+
+Name    : Urwa Kashaf
+Roll No : 231984
+Section : BSSE - 7B
+
+Project : LSNM Network Attack Detector (Intrusion Detection System)
+          ML model -> Flask REST API -> Angular web app -> GitHub Actions CI/CD -> GitHub Pages
+
+Repository : https://github.com/urwakashaf2002-beep/intrusion_detection_system
+Live page  : https://urwakashaf2002-beep.github.io/intrusion_detection_system/
+
+Base research paper : "End-to-End Threat Hunting with a Novel Multiclass Dataset
+                       for Intelligent Intrusion Detection" (LSNM2024 dataset)
