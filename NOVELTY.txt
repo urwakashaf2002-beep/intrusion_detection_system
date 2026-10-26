@@ -1,0 +1,122 @@
+NOVELTY / MY CONTRIBUTION TO THE RESEARCH PAPER
+===============================================
+
+Student : Urwa Kashaf | Roll No: 231984 | BSSE - 7B
+Paper   : End-to-End Threat Hunting with a Novel Multiclass Dataset for
+          Intelligent Intrusion Detection (LSNM2024)
+
+1. WHAT THE PAPER DOES
+----------------------
+- Builds the LSNM2024 dataset (attack traffic from a Kali / pfSense / OWASP lab).
+- Trains and compares ML and DL models (LR, DT, RF, NB, FNN, MLP, SCNN, DCNN).
+- Detects intrusions in three ways: binary (normal vs one attack), anomaly-based
+  (normal vs all attacks) and multiclass (normal plus 15 named attack types).
+- Reports very high accuracy (up to 99.9% in multiclass tests).
+- Provides only a Streamlit GUI for demonstration (Section VI-E).
+- Does NOT assign any severity or risk level to a detected attack: a detection
+  result is only "attack / which attack", with no indication of how serious it is.
+- Lists "Scalability", "cloud-based deployment" and "Enhanced GUI features"
+  as FUTURE WORK (Section IX). Models are saved as .pkl files, with no web
+  service, no input validation layer and no automated testing or deployment.
+
+2. WHAT I HAVE ALREADY BUILT (IMPLEMENTED AND WORKING)
+------------------------------------------------------
+My implemented contribution is the DEPLOYMENT and AUTOMATION layer that the paper
+leaves as future work.
+
+ a) Deployable model
+    - Random Forest (200 trees) trained on the 150K ML-ready LSNM2024 subset.
+    - 44 numeric packet features; binary output: Benign (0) / Attack (1).
+    - Saved as one bundle (pipeline + feature order + class names + version).
+
+ b) Flask REST API (backend)
+    - GET /health  : service status.
+    - GET /schema  : fixed data type and allowed range of every feature.
+    - POST /predict: returns prediction, label and probabilities.
+
+ c) Fixed, backend-enforced input ranges (security / robustness)
+    - Every feature has a fixed data type (binary / integer / decimal) and a
+      fixed min-max range, defined in backend/feature_schema.py.
+    - The API rejects out-of-range, non-numeric, non-integer or missing values
+      with HTTP 400 and a clear message, so malformed or hostile input never
+      reaches the model.
+    - Ranges are taken from the training data, so the model is only asked to
+      predict inside the region it has actually seen.
+
+ d) Angular web application (frontend)
+    - 44-field form showing each feature's range, type and description.
+    - Client-side validation that matches the backend rules.
+    - "Fill Benign sample" / "Fill Attack sample" demo buttons and a
+      colour-coded result with class probabilities.
+    - The form is GENERATED from the backend schema, so frontend and backend
+      cannot silently drift apart.
+
+ e) Automation / DevOps (CI/CD with GitHub Actions)
+    - On every push: install pinned dependencies, run the automated tests
+      (API behaviour, range validation, schema/frontend sync), build Angular.
+    - Automatic deployment of the Angular app to GitHub Pages.
+    - Pinned library versions for a reproducible environment.
+
+ f) Quality and reproducibility
+    - Automated pytest suite and documented run steps for anyone to repeat.
+
+3. MY MODEL RESULTS (80/20 stratified split, random_state = 42)
+---------------------------------------------------------------
+Accuracy 94.54% | Precision 94.66% | Recall 94.39% | F1 94.53% | ROC-AUC 98.68%
+
+These are lower than the paper's headline numbers because I use the smaller
+150K ML-ready subset with 44 pre-computed numeric features, and a binary task.
+The two results are not directly comparable. My focus is turning a trained
+model into a tested, validated, automatically deployed application.
+
+4. PLANNED CONTRIBUTION - SEVERITY / RISK LEVEL  (NOT YET IMPLEMENTED)
+-----------------------------------------------------------------------
+STATUS: PLANNED. The two features below are my intended next contribution and
+are not part of the current code. They will be built and tested later, and this
+file will be updated when they are done.
+
+The paper stops at "an attack was detected". I plan to add a way to tell the
+user HOW SERIOUS the detection is, in two complementary parts:
+
+ Option A - Probability-based risk level
+    - The API converts the model's attack probability into a risk level:
+      Low, Medium, High or Critical, using fixed thresholds kept in the backend.
+    - The Angular page shows it as a colour-coded badge.
+    - This is a confidence-based risk score, NOT a real impact assessment.
+      Random Forest probabilities are not calibrated probabilities.
+
+ Option B - Attack-type severity
+    - Train a multiclass model on the dataset's attack_type column so the
+      system names the attack (for example SYN Flood, SQL Injection, XSS).
+    - A severity table maps each attack type to a level (for example
+      Remote Code Execution -> Critical, Port Scanning -> Medium).
+    - The severity table will be defined by me from general security-impact
+      reasoning and documented with a reason for each level. It does not come
+      from the paper or from the dataset.
+
+ Planned tests: threshold boundaries, every attack type has a severity, API
+ response fields, and automated CI checks.
+
+ Known risks I expect (to be reported honestly when built):
+    - Some attack types have very few samples in the 150K subset (for example
+      DDOS-UDP, DDOS-RAWIP, DDOS-ICMP, MITM-ARP-Spoofing), so the multiclass
+      model may be weak on them.
+    - Multiclass accuracy on this subset is expected to be lower than the
+      paper's reported results.
+
+5. LIMITATIONS (stated honestly)
+--------------------------------
+- GitHub Pages hosts only the static Angular page; Flask and the model run
+  locally, so live prediction works only on the local machine.
+- The deployed model currently does binary detection only (Benign vs Attack).
+  It does not yet name the attack or give a severity level (see section 4).
+- Ranges reflect the training data, not every value that is valid in the
+  network protocols.
+- Research / teaching prototype, not a production intrusion-detection system.
+
+6. FUTURE WORK
+--------------
+- Implement the severity / risk level described in section 4.
+- Host Flask on a cloud service so Pages can call a live API.
+- Compare DT / RF / LightGBM for the multiclass model.
+- Add live packet capture input and logging of predictions.
